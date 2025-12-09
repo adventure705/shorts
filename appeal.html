@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유튜브 쇼츠 항소 완전 정복</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; scroll-behavior: smooth; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-padding {
+            padding-top: 100px;
+            margin-top: -80px;
+        }
+        .sticky-nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .important-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.1));
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- 아이콘 컴포넌트 ---
+        const Icon = ({ children, className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {children}
+            </svg>
+        );
+
+        // 아이콘 데이터
+        const Icons = {
+            Video: (
+                <React.Fragment>
+                    <polygon points="23 7 16 12 23 17 23 7"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                </React.Fragment>
+            ),
+            AlertTriangle: (
+                <React.Fragment>
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </React.Fragment>
+            ),
+            Zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>,
+            ShieldAlert: (
+                <React.Fragment>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </React.Fragment>
+            ),
+            Book: (
+                <React.Fragment>
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </React.Fragment>
+            ),
+            ArrowUp: (
+                <React.Fragment>
+                    <line x1="12" y1="19" x2="12" y2="5" />
+                    <polyline points="5 12 12 5 19 12" />
+                </React.Fragment>
+            ),
+            CheckCircle: (
+                <React.Fragment>
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </React.Fragment>
+            ),
+            MessageCircle: <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>,
+            FileText: (
+                <React.Fragment>
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <line x1="10" y1="9" x2="8" y2="9"/>
+                </React.Fragment>
+            ),
+            X: (
+                <React.Fragment>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </React.Fragment>
+            ),
+            Star: (
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            )
+        };
+
+        const LucideIcon = ({ name, className = "w-6 h-6" }) => (
+            <Icon className={className}>
+                {Icons[name]}
+            </Icon>
+        );
+
+        // --- 메인 앱 ---
+        const App = () => {
+            const [showTopBtn, setShowTopBtn] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    if (window.scrollY > 300) setShowTopBtn(true);
+                    else setShowTopBtn(false);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const scrollToSection = (id) => {
+                const element = document.getElementById(id);
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const scrollToTop = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            return (
+                <div className="bg-slate-950 min-h-screen pb-20 selection:bg-indigo-500 selection:text-white">
+                    {/* Sticky Header & Nav */}
+                    <div className="sticky-nav sticky top-0 z-50 w-full px-4 py-3 shadow-lg shadow-indigo-500/10 border-b border-white/5">
+                        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                            <h1 className="text-xl font-bold text-white tracking-tight cursor-pointer flex items-center gap-2" onClick={scrollToTop}>
+                                <LucideIcon name="ShieldAlert" className="text-indigo-500" />
+                                <span>Shorts <span className="text-indigo-400">Appeal</span></span>
+                            </h1>
+                            <nav className="flex flex-wrap justify-center gap-2">
+                                {[
+                                    { id: 'must-read', label: '★ 룰쌤 가이드' },
+                                    { id: 'reuse', label: '재사용 항소' },
+                                    { id: 'termination', label: '채널 삭제' },
+                                    { id: 'cases', label: '성공/실패 사례' },
+                                    { id: 'tips', label: '필수 꿀팁' }
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => scrollToSection(tab.id)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all ${tab.id === 'must-read' ? 'bg-red-600 text-white hover:bg-red-500 animate-pulse' : 'bg-slate-800 text-slate-300 hover:bg-indigo-600 hover:text-white'}`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div className="max-w-4xl mx-auto px-4 mt-12">
+                        
+                        {/* Intro Hero */}
+                        <div className="text-center py-16 mb-12 border-b border-slate-800">
+                            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight leading-tight text-white">
+                                항소의 기술:<br/>
+                                <span className="gradient-text">죽은 채널 살리기</span>
+                            </h1>
+                            <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
+                                수익 창출 거절, 재사용 콘텐츠, 채널 삭제까지.<br/>
+                                38개의 실전 대화 로그에서 추출한 <strong>'진짜 먹히는'</strong> 대응 전략을 모두 공개합니다.
+                            </p>
+                        </div>
+
+                        {/* Contents List (Scroll Layout) */}
+                        <div className="space-y-24">
+
+                            {/* 0. ★ 필독: 룰쌤 항소 영상 가이드 (Must Read) */}
+                            <section id="must-read" className="section-padding">
+                                <div className="important-box p-8 rounded-3xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-red-600 px-6 py-2 rounded-bl-xl text-white font-black text-sm shadow-lg">MUST READ</div>
+                                    <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                                        <div className="bg-red-500/20 p-3 rounded-full animate-bounce">
+                                            <LucideIcon name="Star" className="text-red-500 w-8 h-8 fill-current" />
+                                        </div>
+                                        <span className="text-red-400">가장 중요:</span> 룰쌤의 항소 영상 가이드
+                                    </h2>
+                                    
+                                    <div className="space-y-6">
+                                        <p className="text-lg text-slate-200 font-medium leading-relaxed border-l-4 border-red-500 pl-4">
+                                            다른 건 몰라도 이건 꼭 지키세요.<br/>
+                                            커뮤니티 수강생들이 입을 모아 말하는 <strong>'가장 승인율 높은'</strong> 항소 영상 제작 공식입니다.
+                                        </p>
+
+                                        <div className="bg-slate-900/80 p-6 rounded-2xl border border-red-500/30">
+                                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                                <LucideIcon name="CheckCircle" className="text-green-400 w-5 h-5" />
+                                                룰쌤 양식 핵심 요약 (영상 길이: 3분 미만)
+                                            </h3>
+                                            <ol className="list-decimal pl-5 space-y-4 text-slate-300">
+                                                <li>
+                                                    <strong className="text-white text-lg">인트로 (URL 박제):</strong><br/>
+                                                    영상 시작하자마자 내 채널 URL을 텍스트로 크고 명확하게 띄워서 보여줍니다.
+                                                </li>
+                                                <li>
+                                                    <strong className="text-white text-lg">작업 환경 인증:</strong><br/>
+                                                    단순한 결과물이 아니라, <strong>편집 프로그램(캡컷, 프리미어 등)의 타임라인</strong>이 움직이는 화면을 녹화해서 보여줘야 합니다.
+                                                </li>
+                                                <li>
+                                                    <strong className="text-white text-lg">편집 과정 시연 (배속):</strong><br/>
+                                                    컷 편집, 자막 입력, 효과 삽입 과정을 배속으로 빠르게 보여주며 "내가 직접 한 땀 한 땀 만들었다"는 것을 증명하세요.
+                                                </li>
+                                                <li>
+                                                    <strong className="text-white text-lg">가치 부여 멘트:</strong><br/>
+                                                    "나는 원본 소스를 그대로 쓴 게 아니라, 나만의 해설과 가치를 더해 재창작했다"는 내레이션(또는 자막)을 반드시 넣으세요.
+                                                </li>
+                                            </ol>
+                                            <div className="mt-6 p-4 bg-red-600/20 rounded-xl text-center border border-red-500/30">
+                                                <span className="text-red-300 font-bold text-base flex justify-center items-center gap-2">
+                                                    <LucideIcon name="ShieldAlert" className="w-5 h-5" />
+                                                    주의: 영상은 반드시 '일부 공개(Unlisted)'로 업로드하세요! (비공개 X)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            {/* 1. 재사용 콘텐츠 항소 (Reuse Content Appeal) */}
+                            <section id="reuse" className="section-padding">
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-indigo-500 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-indigo-500/10 px-4 py-2 rounded-bl-xl text-indigo-300 font-bold text-xs">VIDEO APPEAL</div>
+                                    <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                                        <div className="bg-indigo-500/20 p-3 rounded-xl">
+                                            <LucideIcon name="Video" className="text-indigo-400 w-8 h-8" />
+                                        </div>
+                                        재사용 콘텐츠 (Reuse) 항소 전략
+                                    </h2>
+                                    <p className="text-slate-400 mb-8 ml-16">
+                                        위 '룰쌤 가이드'를 기반으로 한 구체적인 실전 전략입니다.
+                                    </p>
+
+                                    <div className="space-y-8">
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700">
+                                            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                                <LucideIcon name="MessageCircle" className="text-indigo-400 w-5 h-5" />
+                                                🔥 뜨거운 감자: TTS(음성) 필수인가?
+                                            </h3>
+                                            <div className="grid md:grid-cols-2 gap-6">
+                                                <div className="p-4 bg-red-500/10 rounded-xl border border-red-500/20">
+                                                    <h4 className="font-bold text-red-400 mb-2">TTS 필수설</h4>
+                                                    <p className="text-slate-400 text-sm leading-relaxed">
+                                                        "TTS를 넣지 않아 항소에 실패했다"는 사례가 많습니다 (예: 케일럽님). 내레이션이 없으면 유튜브는 이를 단순 짜깁기로 오인하기 쉽습니다.
+                                                    </p>
+                                                </div>
+                                                <div className="p-4 bg-green-500/10 rounded-xl border border-green-500/20">
+                                                    <h4 className="font-bold text-green-400 mb-2">마라님의 '무음 TTS' 꼼수</h4>
+                                                    <p className="text-slate-300 text-sm leading-relaxed">
+                                                        영상 분위기상 TTS가 싫다면? <br/>
+                                                        편집 시 자막 내용을 TTS로 변환해 오디오 트랙에 넣고 <span className="text-yellow-400 font-bold">볼륨을 -40db(무음)</span>로 낮추세요.<br/>
+                                                        시청자는 안 들리지만, 항소 영상 타임라인에는 <strong>"오디오까지 편집한 흔적"</strong>이 남아 창작성을 인정받을 수 있습니다.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* 2. 채널 삭제 대응 (Channel Termination) */}
+                            <section id="termination" className="section-padding">
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-red-500 relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-red-500/10 px-4 py-2 rounded-bl-xl text-red-400 font-bold text-xs">EMAIL APPEAL</div>
+                                    <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                                        <div className="bg-red-500/20 p-3 rounded-xl">
+                                            <LucideIcon name="AlertTriangle" className="text-red-500 w-8 h-8" />
+                                        </div>
+                                        채널 삭제 / 스팸 정책 위반
+                                    </h2>
+                                    <p className="text-slate-400 mb-8 ml-16">
+                                        수익 정지가 아니라 채널이 아예 날아간 경우입니다. 영상이 아닌 <strong>이의 제기 폼(Email)</strong>으로 싸워야 합니다.
+                                    </p>
+
+                                    <div className="space-y-6">
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-red-500/20">
+                                            <h3 className="text-lg font-bold text-white mb-4">📝 이의 제기(Objection) 필승 논리</h3>
+                                            <div className="space-y-4 text-sm text-slate-300">
+                                                <div className="flex gap-3 items-start p-3 bg-red-900/20 rounded-lg">
+                                                    <span className="text-red-500 font-bold text-lg">X</span>
+                                                    <div>
+                                                        <strong className="text-red-400 block mb-1">절대 금지 멘트</strong>
+                                                        "제가 실수했습니다", "한 번만 봐주세요", "몰랐습니다"<br/>
+                                                        → 구글 시스템은 인정에 호소해도 들어주지 않습니다.
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-3 items-start p-3 bg-green-900/20 rounded-lg">
+                                                    <span className="text-green-500 font-bold text-lg">O</span>
+                                                    <div>
+                                                        <strong className="text-green-400 block mb-1">필승 주장 멘트</strong>
+                                                        "나는 유튜브 가이드라인을 완벽히 준수했다." (확신)<br/>
+                                                        "이 삭제 조치는 명백한 <strong className="text-white">시스템 오류</strong>이거나 <strong className="text-white">AI의 오판</strong>이다."<br/>
+                                                        "내 채널은 시청자에게 스팸이 아닌 유익한 정보를 제공한다."
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl text-center border border-slate-700">
+                                            <h3 className="text-lg font-bold text-white mb-2">🧟 좀비 전략 (Zombie Strategy)</h3>
+                                            <p className="text-sm text-slate-400 leading-relaxed">
+                                                한 번 거절당했다고 포기하지 마세요.<br/>
+                                                담당자가 바뀔 때까지 <span className="text-indigo-400 font-bold">2주 간격으로 계속 재문의</span>를 넣으세요.<br/>
+                                                실제로 이렇게 해서 복구된 사례가 존재합니다.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* 3. 성공/실패 사례 (Cases) */}
+                            <section id="cases" className="section-padding">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="glass-panel p-6 rounded-3xl border-t-4 border-green-500">
+                                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                            <LucideIcon name="CheckCircle" className="text-green-500 w-6 h-6" />
+                                            성공 사례 (klover님)
+                                        </h3>
+                                        <div className="space-y-3 text-sm text-slate-300">
+                                            <p><strong>상황:</strong> 군사 채널 운영 중 '스팸 및 현혹 행위'로 채널 삭제됨.</p>
+                                            <p><strong>대응:</strong> 위 '필승 논리'대로 "가이드라인 준수 확신 + 시스템 오류 주장" 내용을 담은 이의 제기 메일 발송.</p>
+                                            <p className="p-3 bg-green-500/10 rounded-lg text-green-300 font-bold">
+                                                결과: 메일 발송 직후 승인되어 즉시 채널 복구됨.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="glass-panel p-6 rounded-3xl border-t-4 border-red-500">
+                                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                            <LucideIcon name="X" className="text-red-500 w-6 h-6" />
+                                            실패 사례 (망뎅이님)
+                                        </h3>
+                                        <div className="space-y-3 text-sm text-slate-300">
+                                            <p><strong>상황:</strong> 채널 삭제 후 복구 실패.</p>
+                                            <p><strong>원인 분석:</strong> 단순 가이드 위반이 아니라, <span className="text-red-400 font-bold">기기/IP 분리 실패</span>(와이파이 공유 등)로 인한 '연좌제' 삭제로 추정됨.</p>
+                                            <p className="p-3 bg-red-500/10 rounded-lg text-red-300 font-bold">
+                                                교훈: 연좌제로 묶여서 삭제된 경우 복구가 거의 불가능함. 애초에 분리하는 것이 생명.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* 4. 필수 꿀팁 & 리스크 관리 */}
+                            <section id="tips" className="section-padding">
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-yellow-500">
+                                    <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                                        <div className="bg-yellow-500/20 p-3 rounded-xl">
+                                            <LucideIcon name="Zap" className="text-yellow-500 w-8 h-8" />
+                                        </div>
+                                        고수들의 실전 꿀팁 & 리스크 관리
+                                    </h2>
+
+                                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition-colors">
+                                            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                                <LucideIcon name="FileText" className="text-yellow-500 w-5 h-5" /> URL 오류 해결법
+                                            </h3>
+                                            <p className="text-sm text-slate-400 mb-3">
+                                                항소 페이지에 영상 URL 입력 시 '잘못된 URL' 오류가 뜰 때:
+                                            </p>
+                                            <div className="bg-black/40 p-3 rounded text-xs text-green-400 font-mono break-all">
+                                                유튜브 스튜디오 > 콘텐츠 > 해당 영상 수정(연필) > 우측 상단 '동영상 링크' 복사해서 사용
+                                            </div>
+                                        </div>
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 hover:border-yellow-500/50 transition-colors">
+                                            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                                                <LucideIcon name="ShieldAlert" className="text-yellow-500 w-5 h-5" /> 선제적 방어 (부적)
+                                            </h3>
+                                            <p className="text-sm text-slate-400 leading-relaxed">
+                                                재사용 경고가 오기 전에, 미리 <strong>항소용 영상을 만들어 '일부 공개'로 업로드</strong>해두세요.<br/>
+                                                마라님 왈, 경고를 피하는 부적 효과가 있거나 경고 시 즉각 대응이 가능합니다.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="p-4 bg-slate-900/60 rounded-xl flex gap-4 items-center border border-slate-700">
+                                            <div className="text-2xl">📹</div>
+                                            <div>
+                                                <strong className="text-white block mb-1">Q. 항소 중에도 영상 올려야 하나요?</strong>
+                                                <p className="text-sm text-slate-400">
+                                                    <span className="text-green-400 font-bold">A. 무조건 YES.</span> 항소 심사 중이나 재사용 알림 기간(일주일)에도 영상을 멈추지 마세요. 채널의 흐름(피드)을 유지해야 합니다. 수익도 나중에 정산될 수 있습니다.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="p-4 bg-slate-900/60 rounded-xl flex gap-4 items-center border border-slate-700">
+                                            <div className="text-2xl">🗑️</div>
+                                            <div>
+                                                <strong className="text-white block mb-1">Q. 영상 삭제해도 되나요?</strong>
+                                                <p className="text-sm text-slate-400">
+                                                    <span className="text-red-400 font-bold">A. 항소 중에는 절대 금지.</span> 증거 인멸로 간주되어 항소 기회가 박탈될 수 있습니다. <br/>
+                                                    단, <strong>저작권 경고(스트라이크)를 2회</strong> 받았다면? 그때는 3아웃을 피하기 위해 영상을 싹 다 지우고 잠수타는 게 낫습니다.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <footer className="mt-32 text-center py-10 border-t border-slate-800 text-slate-600 text-sm">
+                        <p className="mb-2 font-bold">Shorts Appeal Complete Guide</p>
+                        <p>Based on 38 Chat Logs Analysis • Created for Shorts Creators</p>
+                    </footer>
+
+                    {/* Scroll To Top Button */}
+                    {showTopBtn && (
+                        <button 
+                            onClick={scrollToTop}
+                            className="fixed bottom-8 right-8 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-500 transition-all z-50 animate-slide-up"
+                        >
+                            <LucideIcon name="ArrowUp" className="w-6 h-6" />
+                        </button>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

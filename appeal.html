@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>유튜브 쇼츠 항소 완전 정복</title>
+    <title>유튜브 쇼츠 항소 완전 정복 (Final)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
@@ -109,6 +109,13 @@
             ),
             Star: (
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            ),
+            HelpCircle: (
+                <React.Fragment>
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </React.Fragment>
             )
         };
 
@@ -144,23 +151,23 @@
                 <div className="bg-slate-950 min-h-screen pb-20 selection:bg-indigo-500 selection:text-white">
                     {/* Sticky Header & Nav */}
                     <div className="sticky-nav sticky top-0 z-50 w-full px-4 py-3 shadow-lg shadow-indigo-500/10 border-b border-white/5">
-                        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                             <h1 className="text-xl font-bold text-white tracking-tight cursor-pointer flex items-center gap-2" onClick={scrollToTop}>
                                 <LucideIcon name="ShieldAlert" className="text-indigo-500" />
                                 <span>Shorts <span className="text-indigo-400">Appeal</span></span>
                             </h1>
                             <nav className="flex flex-wrap justify-center gap-2">
                                 {[
-                                    { id: 'must-read', label: '★ 룰쌤 가이드' },
-                                    { id: 'reuse', label: '재사용 항소' },
+                                    { id: 'must-read', label: '★ 룰쌤 가이드', active: true },
+                                    { id: 'when', label: '언제 항소하나?' },
+                                    { id: 'reuse', label: '재사용 대응' },
                                     { id: 'termination', label: '채널 삭제' },
-                                    { id: 'cases', label: '성공/실패 사례' },
-                                    { id: 'tips', label: '필수 꿀팁' }
+                                    { id: 'mindset', label: '마인드셋' }
                                 ].map(tab => (
                                     <button
                                         key={tab.id}
                                         onClick={() => scrollToSection(tab.id)}
-                                        className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all ${tab.id === 'must-read' ? 'bg-red-600 text-white hover:bg-red-500 animate-pulse' : 'bg-slate-800 text-slate-300 hover:bg-indigo-600 hover:text-white'}`}
+                                        className={`px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition-all ${tab.active ? 'bg-red-600 text-white hover:bg-red-500 animate-pulse' : 'bg-slate-800 text-slate-300 hover:bg-indigo-600 hover:text-white'}`}
                                     >
                                         {tab.label}
                                     </button>
@@ -179,7 +186,7 @@
                             </h1>
                             <p className="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
                                 수익 창출 거절, 재사용 콘텐츠, 채널 삭제까지.<br/>
-                                38개의 실전 대화 로그에서 추출한 <strong>'진짜 먹히는'</strong> 대응 전략을 모두 공개합니다.
+                                38개의 실전 대화 로그에서 추출한 <strong>'진짜 먹히는'</strong> 대응 전략과 마인드셋.
                             </p>
                         </div>
 
@@ -236,11 +243,69 @@
                                     </div>
                                 </div>
                             </section>
+
+                            {/* 0.5 언제 항소해야 하나? (When to Appeal) - New Section */}
+                            <section id="when" className="section-padding">
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-yellow-500">
+                                    <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                                        <div className="bg-yellow-500/20 p-3 rounded-xl">
+                                            <LucideIcon name="HelpCircle" className="text-yellow-500 w-8 h-8" />
+                                        </div>
+                                        언제 항소해야 할까? (판단 기준)
+                                    </h2>
+                                    
+                                    <div className="grid md:grid-cols-3 gap-6">
+                                        {/* Case 1: 재사용 콘텐츠 */}
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 hover:border-green-500 transition-all group">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h3 className="text-lg font-bold text-white">1. 재사용 콘텐츠</h3>
+                                                <span className="text-xs font-bold px-2 py-1 rounded bg-green-500/20 text-green-400">항소 필수</span>
+                                            </div>
+                                            <p className="text-sm text-slate-400 mb-4 h-20">
+                                                수익 창출이 거절되거나 정지된 경우. 가장 흔한 케이스입니다.
+                                            </p>
+                                            <div className="p-3 bg-green-500/10 rounded-lg text-sm text-green-300 font-bold">
+                                                👉 영상 제작하여 소명
+                                            </div>
+                                        </div>
+
+                                        {/* Case 2: 채널 삭제 */}
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 hover:border-blue-500 transition-all group">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h3 className="text-lg font-bold text-white">2. 채널 삭제</h3>
+                                                <span className="text-xs font-bold px-2 py-1 rounded bg-blue-500/20 text-blue-400">이의 제기</span>
+                                            </div>
+                                            <p className="text-sm text-slate-400 mb-4 h-20">
+                                                스팸, 현혹 행위 등으로 채널이 날아간 경우. 억울하다면 무조건 싸워야 합니다.
+                                            </p>
+                                            <div className="p-3 bg-blue-500/10 rounded-lg text-sm text-blue-300 font-bold">
+                                                👉 이메일 폼 제출
+                                            </div>
+                                        </div>
+
+                                        {/* Case 3: 저작권 스트라이크 */}
+                                        <div className="bg-slate-900/60 p-6 rounded-2xl border border-slate-700 hover:border-red-500 transition-all group">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <h3 className="text-lg font-bold text-white">3. 저작권 경고</h3>
+                                                <span className="text-xs font-bold px-2 py-1 rounded bg-red-500/20 text-red-400">항소 금지</span>
+                                            </div>
+                                            <p className="text-sm text-slate-400 mb-4 h-20">
+                                                저작권 위반 경고(스트라이크). 3번이면 채널 삭제입니다.
+                                            </p>
+                                            <div className="p-3 bg-red-500/10 rounded-lg text-sm text-red-300 font-bold">
+                                                👉 영상 삭제 후 존버
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="mt-6 text-sm text-slate-400 text-center bg-slate-800/50 p-3 rounded-xl">
+                                        * 저작권 경고가 2회 쌓였다면? <strong>영상을 모두 삭제(비공개 아님)</strong>하고 당분간 채널을 쉬게 하거나 버리는 것이 낫습니다.
+                                    </p>
+                                </div>
+                            </section>
                             
                             {/* 1. 재사용 콘텐츠 항소 (Reuse Content Appeal) */}
                             <section id="reuse" className="section-padding">
-                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-indigo-500 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 bg-indigo-500/10 px-4 py-2 rounded-bl-xl text-indigo-300 font-bold text-xs">VIDEO APPEAL</div>
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-indigo-500">
                                     <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
                                         <div className="bg-indigo-500/20 p-3 rounded-xl">
                                             <LucideIcon name="Video" className="text-indigo-400 w-8 h-8" />
@@ -248,7 +313,7 @@
                                         재사용 콘텐츠 (Reuse) 항소 전략
                                     </h2>
                                     <p className="text-slate-400 mb-8 ml-16">
-                                        위 '룰쌤 가이드'를 기반으로 한 구체적인 실전 전략입니다.
+                                        '룰쌤 가이드'를 기반으로 한 구체적인 팁입니다.
                                     </p>
 
                                     <div className="space-y-8">
@@ -280,8 +345,7 @@
 
                             {/* 2. 채널 삭제 대응 (Channel Termination) */}
                             <section id="termination" className="section-padding">
-                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-red-500 relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 bg-red-500/10 px-4 py-2 rounded-bl-xl text-red-400 font-bold text-xs">EMAIL APPEAL</div>
+                                <div className="glass-panel p-8 rounded-3xl border-l-4 border-red-500">
                                     <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
                                         <div className="bg-red-500/20 p-3 rounded-xl">
                                             <LucideIcon name="AlertTriangle" className="text-red-500 w-8 h-8" />
@@ -289,7 +353,7 @@
                                         채널 삭제 / 스팸 정책 위반
                                     </h2>
                                     <p className="text-slate-400 mb-8 ml-16">
-                                        수익 정지가 아니라 채널이 아예 날아간 경우입니다. 영상이 아닌 <strong>이의 제기 폼(Email)</strong>으로 싸워야 합니다.
+                                        수익 정지가 아니라 채널이 아예 날아간 경우입니다. <strong>이메일 이의 제기(Objection)</strong>로 싸워야 합니다.
                                     </p>
 
                                     <div className="space-y-6">
@@ -361,14 +425,14 @@
                                 </div>
                             </section>
 
-                            {/* 4. 필수 꿀팁 & 리스크 관리 */}
+                            {/* 4. 필수 꿀팁 */}
                             <section id="tips" className="section-padding">
                                 <div className="glass-panel p-8 rounded-3xl border-l-4 border-yellow-500">
                                     <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
                                         <div className="bg-yellow-500/20 p-3 rounded-xl">
                                             <LucideIcon name="Zap" className="text-yellow-500 w-8 h-8" />
                                         </div>
-                                        고수들의 실전 꿀팁 & 리스크 관리
+                                        고수들의 실전 꿀팁
                                     </h2>
 
                                     <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -409,10 +473,35 @@
                                             <div>
                                                 <strong className="text-white block mb-1">Q. 영상 삭제해도 되나요?</strong>
                                                 <p className="text-sm text-slate-400">
-                                                    <span className="text-red-400 font-bold">A. 항소 중에는 절대 금지.</span> 증거 인멸로 간주되어 항소 기회가 박탈될 수 있습니다. <br/>
-                                                    단, <strong>저작권 경고(스트라이크)를 2회</strong> 받았다면? 그때는 3아웃을 피하기 위해 영상을 싹 다 지우고 잠수타는 게 낫습니다.
+                                                    <span className="text-red-400 font-bold">A. 항소 중에는 절대 금지.</span> 증거 인멸로 간주되어 항소 기회가 박탈될 수 있습니다.
                                                 </p>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* 5. 항소를 대하는 마인드셋 (Mindset) - Restored Section */}
+                            <section id="mindset" className="section-padding">
+                                <div className="glass-panel p-8 rounded-3xl text-center bg-gradient-to-b from-indigo-900/20 to-slate-900/80 border border-indigo-500/30">
+                                    <h2 className="text-3xl font-bold text-white mb-8 flex justify-center items-center gap-3">
+                                        <LucideIcon name="Book" className="text-indigo-400 w-8 h-8" />
+                                        항소를 대하는 마인드셋
+                                    </h2>
+                                    <div className="grid md:grid-cols-2 gap-8">
+                                        <div className="bg-slate-900/50 p-8 rounded-2xl hover:bg-slate-800 transition-colors border border-slate-700">
+                                            <div className="text-5xl mb-6">🚪</div>
+                                            <h3 className="text-xl font-bold text-white mb-2">"항소는 등용문이다"</h3>
+                                            <p className="text-slate-400 text-sm leading-relaxed">
+                                                재사용 콘텐츠 알림은 유튜브 쇼츠 크리에이터라면 누구나 겪는 통과의례입니다. 당황하지 말고 "이제 나도 진짜 고수의 길로 가는구나"라고 생각하세요. 이 과정을 넘어야 수익화의 길이 열립니다.
+                                            </p>
+                                        </div>
+                                        <div className="bg-slate-900/50 p-8 rounded-2xl hover:bg-slate-800 transition-colors border border-slate-700">
+                                            <div className="text-5xl mb-6">⏳</div>
+                                            <h3 className="text-xl font-bold text-white mb-2">"90일은 금방 간다"</h3>
+                                            <p className="text-slate-400 text-sm leading-relaxed">
+                                                설령 항소에 실패하더라도 90일 뒤에 다시 신청할 수 있습니다. 그동안 채널을 버리지 말고 영상을 계속 올리며 채널 지수를 관리하면, 3개월 뒤 더 큰 수익으로 보답받습니다. 멘탈을 지키는 자가 승리합니다.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

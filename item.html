@@ -1205,8 +1205,8 @@
         }
 
         setIsAnalyzing(true);
-        setAnalysisResult(null);
-        setScriptOutline(null);
+        // setAnalysisResult(null); // Already handled in handleSelectVideo
+        // setScriptOutline(null); // Already handled in handleSelectVideo
         
         try {
           const key = getActiveApiKey();
@@ -1393,8 +1393,9 @@
           <main className="max-w-7xl mx-auto grid grid-cols-12 gap-6">
             
             <div className="col-span-12 bg-slate-800/50 p-6 rounded-2xl border border-slate-700 backdrop-blur-sm shadow-xl">
-               <div className="grid grid-cols-12 gap-6 mb-6">
-                   <div className="col-span-4 flex flex-col gap-4">
+               {/* --- Search/Filter Control Grid (Mobile Responsive) --- */}
+               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                   <div className="col-span-12 md:col-span-4 flex flex-col gap-4">
                        <div>
                            <div className="flex justify-between items-end mb-1">
                                 <label className="block text-xs font-bold text-slate-400">검색 키워드 (채널은 @핸들명)</label>
@@ -1423,7 +1424,7 @@
                        </div>
                    </div>
 
-                   <div className="col-span-6 flex flex-col gap-4">
+                   <div className="col-span-12 md:col-span-6 flex flex-col gap-4">
                        <div className={`${isChannelSearch ? 'disabled-filter' : ''}`}>
                            <label className="block text-xs font-bold text-slate-400 mb-1">영상 업로드 기간</label>
                            <div className="flex gap-2">
@@ -1446,7 +1447,7 @@
                        </div>
                    </div>
 
-                   <div className="col-span-2">
+                   <div className="col-span-12 md:col-span-2">
                        <button 
                         className="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl shadow-lg font-black text-xl flex flex-col items-center justify-center gap-1 transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={() => searchVideos(false)}
@@ -1457,8 +1458,8 @@
                        </button>
                    </div>
                </div>
-
-               <div className="grid grid-cols-3 gap-8 pt-4 border-t border-slate-700">
+               {/* --- Slider Filters Grid (Mobile Responsive) --- */}
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4 border-t border-slate-700">
                    <div>
                        <div className="flex justify-between mb-1">
                            <label className="text-xs font-bold text-sky-400">🔥 바이럴 지수 (조회수/구독자)</label>
@@ -1713,4 +1714,3 @@
   </script>
 </body>
 </html>
-
